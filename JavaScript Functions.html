@@ -1,0 +1,64 @@
+<html>
+<head>
+</head>
+<body>
+<script>
+//Function Declaration
+       //Observe: no return type, no type on parameters
+function add(n1, n2){
+   return n1 +n2;
+}
+
+//Function Expression
+var sub = function(n1,n2){
+  return n1 - n2
+} 
+
+//Callback example
+var cb = function(n1,n2, callback){
+  return "Result from the two numbers: "+n1+"+"+n2+"="+callback(n1,n2);
+};
+console.log( add(1,2) );     // What will this print? svar = 1+2 som er 3.
+
+console.log( add );          // What will it print and what does add represent? svar = 
+                 //ingenting, fordi vi intet har sat ind i paramtetret. Add representerer en funktion der tager 2 argumenter, plusser dem sammen og returnerer resultatet.
+				 //jeg fik forkert: den printede ikke ingenting (med paranteser ville den printe ingenting), den printede et f(hvilket betegner vi har printet en funktion), og så printer den syntax for funktionen.
+				 // dette vil kun ske hvis vi printer funktionen uden nogle paranteser bagved.
+				 
+console.log( add(1,2,3) ) ; // What will it print? svar = jeg gætter den vil printe 1+2 som er 3 og så ignorere det tredje argument. Jeg fik ret ! :D
+
+console.log( add(1) );	  // What will it print? svar = jeg gætter 1, fordi der ikke er noget andet argument, og derfor vil 1+0=1.
+							//jeg fik forkert. fordi vi ikke har de 2 nødvendige argumenter vil funktionen returnere NaN hvilket er en udefineret værdi.
+							
+console.log( cb(3,3,add) ); // What will it print? jeg gætter: "Result from the two numbers: 3+3=6". Jeg fik ret! 
+								// funktionen cb har et callback fordi "callback" argumentet i paramtetret gør brug af endnu en funktion der kan gentages i denne funktionen, hvilket i dette eksempel er add.
+
+console.log( cb(4,3,sub) ); // What will it print? Jeg gætter: "Result from the two numbers: 4-3=1;". Jeg fik næsten ret. svaret var 4+3=1, hvilket jo ikke lyder rigtigt men det er fordi
+								// at cb funktionen kun har den string at arbejde med ("Result from the two numbers: "+n1+"+"+n2+"="+callback(n1,n2);)
+								
+//console.log(cb(3,3,add())); // What will it print (and what was the problem)? svar = jeg tager et vildt gæt: "Result from the two numbers: 3+3 = NaN.
+								//jeg fik ikke ret. Der blev printet "callback is not a funcion", hvilket jeg godt kan se nu begrund af de 2 paranteser. Man kan godt
+								// nævne et callback men der skal altså ikke nogle paranteser bagved når vi har at gøre med at sætte det ind i parametret som et argument. Uden de 2 paranteser ville svaret give 6.
+console.log(cb(3,"hh",add));// What will it print? svar = jeg gætter "Result from the two numbers: 3+hh = 3hh". Jeg fik ret ! grunden er at nu når der er en string involveret,
+							// så vil 3-tallet også blive betragtet som en string og vil bare sættes sammen med hh sådan som strings normalt ville gøre.
+
+//Rewrite the Callback function expression (cb)  to make a check for all its three required arguments, and throw an Error if any of the arguments does not match
+	var cb2 = function(n1,n2, callback){
+	try{
+	if(typeof n1 !== "number"){
+		throw "n1 is not a number!";
+	}
+	if(typeof n2 !== "number"){
+		throw "n2 is not a number!"
+	}
+	if(typeof callback !== "function"){
+		throw "callback is not a function!"
+	}
+  return "Result from the two numbers: "+n1+"+"+n2+"="+callback(n1,n2);
+  } catch(e){
+  return e;
+  }};
+console.log(cb2(3,1,add));			
+</script>
+</body>
+</html>
