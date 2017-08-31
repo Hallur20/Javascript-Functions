@@ -2,63 +2,207 @@
 <head>
 </head>
 <body>
-<script>
-//Function Declaration
-       //Observe: no return type, no type on parameters
-function add(n1, n2){
-   return n1 +n2;
-}
+    <script>
+        //1
+        //Function Declaration
+        //Observe: no return type, no type on parameters
+        function add(n1, n2) {
+            return n1 + n2;
+        }
+        //Function Expression
+        var sub = function (n1, n2) {
+            return n1 - n2
+        }
+        //Callback example
+        var cb = function (n1, n2, callback) {
+            return "Result from the two numbers: " + n1 + "+" + n2 + "=" + callback(n1, n2);
+        };
+        //2
+        console.log(add(1, 2));     // What will this print? svar = 1+2 som er 3.
+        console.log(add);          // What will it print and what does add represent? svar =
+        //ingenting, fordi vi intet har sat ind i paramtetret. Add representerer en funktion der tager 2 argumenter, plusser dem sammen og returnerer resultatet.
+        //jeg fik forkert: den printede ikke ingenting (med paranteser ville den printe ingenting), den printede et f(hvilket betegner vi har printet en funktion), og så printer den syntax for funktionen.
+        // dette vil kun ske hvis vi printer funktionen uden nogle paranteser bagved.
 
-//Function Expression
-var sub = function(n1,n2){
-  return n1 - n2
-} 
+        console.log(add(1, 2, 3)); // What will it print? svar = jeg gætter den vil printe 1+2 som er 3 og så ignorere det tredje argument. Jeg fik ret ! :D
+        console.log(add(1));	  // What will it print? svar = jeg gætter 1, fordi der ikke er noget andet argument, og derfor vil 1+0=1.
+        //jeg fik forkert. fordi vi ikke har de 2 nødvendige argumenter vil funktionen returnere NaN hvilket er en udefineret værdi.
 
-//Callback example
-var cb = function(n1,n2, callback){
-  return "Result from the two numbers: "+n1+"+"+n2+"="+callback(n1,n2);
-};
-console.log( add(1,2) );     // What will this print? svar = 1+2 som er 3.
+        console.log(cb(3, 3, add)); // What will it print? jeg gætter: "Result from the two numbers: 3+3=6". Jeg fik ret!
+        // funktionen cb har et callback fordi "callback" argumentet i paramtetret gør brug af endnu en funktion der kan gentages i denne funktionen, hvilket i dette eksempel er add.
+        console.log(cb(4, 3, sub)); // What will it print? Jeg gætter: "Result from the two numbers: 4-3=1;". Jeg fik næsten ret. svaret var 4+3=1, hvilket jo ikke lyder rigtigt men det er fordi
+        // at cb funktionen kun har den string at arbejde med ("Result from the two numbers: "+n1+"+"+n2+"="+callback(n1,n2);)
 
-console.log( add );          // What will it print and what does add represent? svar = 
-                 //ingenting, fordi vi intet har sat ind i paramtetret. Add representerer en funktion der tager 2 argumenter, plusser dem sammen og returnerer resultatet.
-				 //jeg fik forkert: den printede ikke ingenting (med paranteser ville den printe ingenting), den printede et f(hvilket betegner vi har printet en funktion), og så printer den syntax for funktionen.
-				 // dette vil kun ske hvis vi printer funktionen uden nogle paranteser bagved.
-				 
-console.log( add(1,2,3) ) ; // What will it print? svar = jeg gætter den vil printe 1+2 som er 3 og så ignorere det tredje argument. Jeg fik ret ! :D
+        //console.log(cb(3,3,add())); // What will it print (and what was the problem)? svar = jeg tager et vildt gæt: "Result from the two numbers: 3+3 = NaN.
+        //jeg fik ikke ret. Der blev printet "callback is not a funcion", hvilket jeg godt kan se nu begrund af de 2 paranteser. Man kan godt
+        // nævne et callback men der skal altså ikke nogle paranteser bagved når vi har at gøre med at sætte det ind i parametret som et argument. Uden de 2 paranteser ville svaret give 6.
+        //ps jeg udkommenterede console.log fordi det gjorde sådan at alt der kommer bagefter dette ikke kommer frem begrund af fejlen.
+        console.log(cb(3, "hh", add));// What will it print? svar = jeg gætter "Result from the two numbers: 3+hh = 3hh". Jeg fik ret ! grunden er at nu når der er en string involveret,
+        // så vil 3-tallet også blive betragtet som en string og vil bare sættes sammen med hh sådan som strings normalt ville gøre.
+        //3
+        //Rewrite the Callback function expression (cb)  to make a check for all its three required arguments, and throw an Error if any of the arguments does not match
+        var cb2 = function (n1, n2, callback) {
+            try {
+                if (typeof n1 !== "number") {
+                    throw "n1 is undefined or not a number, fix this and try again!";
+                }
+                if (typeof n2 !== "number") {
+                    throw "n2 is undefined or not a number, fix this and try again!"
+                }
+                if (typeof callback !== "function") {
+                    throw "callback is undefined or not a function, fix this and try again!"
+                }
+                return "Result from the two numbers: " + n1 + "+" + n2 + "=" + callback(n1, n2);
+            } catch (e) {
+                return e;
+            }
+        };
+        console.log(cb2("test", 1, add)); //burde printe fejlbeskeden: "n1 is not a number, fix this and the function may work!"
+        console.log(cb2(2, "test", add)); //burde printe fejlbeskeden: "n2 is not a number, fix this and the function may work!"
+        console.log(cb2(2, 1, "test")); // burde printe fejlbeskeden: "callback is not a function, fix this and the function may work!"
+        console.log(cb2(2, 1, add)); // burde printe uden fejlbesked: "Result from the two numbers: 2+1=3"
+        //4
+        //Write a mul(n1, n2) function (inspired by add and sub) and use it as the callback for the cb function
+        function mul(n1, n2) {
+            return n1*n2;
+        }
+        console.log(cb(1, 2, mul));
 
-console.log( add(1) );	  // What will it print? svar = jeg gætter 1, fordi der ikke er noget andet argument, og derfor vil 1+0=1.
-							//jeg fik forkert. fordi vi ikke har de 2 nødvendige argumenter vil funktionen returnere NaN hvilket er en udefineret værdi.
-							
-console.log( cb(3,3,add) ); // What will it print? jeg gætter: "Result from the two numbers: 3+3=6". Jeg fik ret! 
-								// funktionen cb har et callback fordi "callback" argumentet i paramtetret gør brug af endnu en funktion der kan gentages i denne funktionen, hvilket i dette eksempel er add.
+        //5) Call cb, this time with an anonymous function that divides the first argument with the second
+        var cbResult = cb(5, 5, function (a, b) { return a / b; });
+        console.log(cbResult);
 
-console.log( cb(4,3,sub) ); // What will it print? Jeg gætter: "Result from the two numbers: 4-3=1;". Jeg fik næsten ret. svaret var 4+3=1, hvilket jo ikke lyder rigtigt men det er fordi
-								// at cb funktionen kun har den string at arbejde med ("Result from the two numbers: "+n1+"+"+n2+"="+callback(n1,n2);)
-								
-//console.log(cb(3,3,add())); // What will it print (and what was the problem)? svar = jeg tager et vildt gæt: "Result from the two numbers: 3+3 = NaN.
-								//jeg fik ikke ret. Der blev printet "callback is not a funcion", hvilket jeg godt kan se nu begrund af de 2 paranteser. Man kan godt
-								// nævne et callback men der skal altså ikke nogle paranteser bagved når vi har at gøre med at sætte det ind i parametret som et argument. Uden de 2 paranteser ville svaret give 6.
-console.log(cb(3,"hh",add));// What will it print? svar = jeg gætter "Result from the two numbers: 3+hh = 3hh". Jeg fik ret ! grunden er at nu når der er en string involveret,
-							// så vil 3-tallet også blive betragtet som en string og vil bare sættes sammen med hh sådan som strings normalt ville gøre.
+        //Callbacks (with map, filter and forEach)
+        //1) Declare a JavaScript array and initialize it with some names (Lars, Jan, Peter, Bo, Frederik etc.). Use the filter method to create a new array with only names of length <=3.
+        //Use the forEach method to iterate and print (console.log) both the original and the new array.
+        var arr = ["Lars", "Frederik", "Bo", "Søren", "Peter", "Andreas", "Per"];
+        var lessThanThree = arr.filter(function (name) { return name.length <= 3; });
+        console.log("-original array:");
+        arr.forEach(function (name) {
+            console.log(name);
+        });
+        console.log("-new array:");
+        lessThanThree.forEach(function (name) {
+            console.log(name);
+        });
+        //2) Use the names-array created above, and, using its map method, create a new array with all names uppercased.
+        var upper = arr.map(function (name) { return name.toUpperCase(); });
+        console.log(upper);
+        //3) Use map, join + just a little bit more to create a function, which given the array of names returns a string with the HTML for the names in a <ul>
+        function arrToUl(arr) {
+            var str = "<ul>";
+            var arrResult = arr.map(function (name) { return "<li>" + name + "</li>"; });
+            str += arrResult.join(""); // de to gåseøjne gør at intet komma eller noget kommer imellem hvert element i arrayet efter de er blevet til en string.
+            str += "</ul>";
+            return str;
+        }
+        console.log(arrToUl(arr));
 
-//Rewrite the Callback function expression (cb)  to make a check for all its three required arguments, and throw an Error if any of the arguments does not match
-	var cb2 = function(n1,n2, callback){
-	try{
-	if(typeof n1 !== "number"){
-		throw "n1 is not a number!";
-	}
-	if(typeof n2 !== "number"){
-		throw "n2 is not a number!"
-	}
-	if(typeof callback !== "function"){
-		throw "callback is not a function!"
-	}
-  return "Result from the two numbers: "+n1+"+"+n2+"="+callback(n1,n2);
-  } catch(e){
-  return e;
-  }};
-console.log(cb2(3,1,add));			
-</script>
+        //4)  Given this JavaScript array
+        var cars = [
+            { id: 1, year: 1997, make: 'Ford', model: 'E350', price: 3000 },
+            { id: 2, year: 1999, make: 'Chevy', model: 'Venture', price: 4900 },
+            { id: 3, year: 2000, make: 'Chevy', model: 'Venture', price: 5000 },
+            { id: 4, year: 1996, make: 'Jeep', model: 'Grand Cherokee', price: 4799 },
+            { id: 5, year: 2005, make: 'Volvo', model: 'V70', price: 44799 }
+        ];
+        //a) Use the filter function to get arrays with only:
+        //Cars newer than 1999
+        //Al  Volvo’s (filter all volvo's?)
+        //All cars with a price below 5000
+        //Can you refactor this into three methods, that takes the filter text as argument
+        //Can you refactor this into one method, that takes the filter text, and type, as argument
+        var newerThan1999 = cars.filter(function (car) { return car.year > 1999; });
+        var noVolvos = cars.filter(function (car) { return car.make !== "Volvo"; });
+        var priceBelow5000 = cars.filter(function (car) { return car.price < 5000; });
+
+        //three methods, that takes the filter text as argument?
+        function newer1999(filterText) {
+            return filterText;
+        }
+        function noVolvos(filterText) {
+            return filterText;
+        }
+        function below5000(filterText) {
+            return filterText;
+        }
+        console.log(newer1999(newerThan1999));
+        console.log(noVolvos);
+        console.log(priceBelow5000);  
+        //one method, that takes the filter text, and type, as argument?
+        function forAll(filterText) {
+            try {
+                if (!Array.isArray(filterText)) {
+                    throw "type is not an array!"
+                }
+                return filterText;
+
+            } catch (e){
+                return e;
+            }
+        }
+        console.log(forAll(newerThan1999));
+        console.log(forAll(true)); //type is not an array
+        //4a) Use map, join + just a little bit more to implement a function, that , given the cars array used above, will create, 
+        //and return a string with valid SQL statements to insert the data into a table with matching column names (id, year, make, model, price)
+        function intoStatement(arr) {
+            var intoStatement = arr.map(function (car) {
+                return "INSERT INTO cars (id, year, make, model, price) VALUES ( " + car.id + "," + car.year + "," + car.make + "," + car.model + "," + car.price + " );";
+            });
+            var str = intoStatement.join(" "); //jeg lavede bare et mellemrum mellem elementerne.
+            return str;
+        }
+        
+
+        //4b) Combine (using chaining) 4 + 4a to create the SQL, only for the conditions given in 4
+        var sql = intoStatement(cars);
+        console.log(sql);
+
+        //Asynchronous Callbacks
+        //1) Given the code below answer, don’t execute the code, in what order you would expect to see the outputs:
+        var msgPrinter = function (msg, delay) {
+            setTimeout(function () {
+                console.log(msg);
+            }, delay);
+        };
+        console.log("aaaaaaaaaa");
+        msgPrinter("bbbbbbbbbb", 2000);
+        console.log("dddddddddd");
+        msgPrinter("eeeeeeeeee", 1000);
+        console.log("ffffffffff");
+        //jeg forventer:
+        //1: console.log("aaaaaaaaaa");
+        //2: console.log("dddddddddd");
+        //3: console.log("ffffffffff");
+        //4: msgPrinter("eeeeeeeeee", 1000);
+        //5: msgPrinter("bbbbbbbbbb", 2000);
+
+        //2) Add the code to a javascript file, execute and verify whether you answer to 1) was right
+        //jeg fik ret! console.log kommer førend msgprinter fordi der ingen timeout er i dem, så de vil bare blive printet i deres naturlige rækkefølge,
+        //herefter kommer msgPrinter("eeeeeeeeee", 1000); fordi at 1000 = 1 sekund delay og til sidst msgPrinter("bbbbbbbbbb", 2000); fordi at 2000 = 2 sekund delay.
+
+        //this and constructor functions 
+        //1) Add this code, 
+        function Person(name) {
+            this.name = name;
+            console.log("Name: " + this.name);
+            setTimeout(function () {
+                console.log("Hi  " + this.name);  //Explain this: efter 2000 millisekunder (2 sekunder) vil funktionen printe "Hi " +  argument.
+            }, 2000);
+        }
+        //call it like this (do it, even if you know it’s silly ;-)
+        Person("Kurt Wonnegut");  //This calls the function
+        console.log("I'm global: " + name);  //Explain this: siden at this.name variablen nu har at gøre med "kurt Wonnegut" fra da argumentet blev sat ind i funktionen,
+        // så er det blevet muligt at printe variablen name i console.log.
+
+        //That was silly. How do we use a function starting with a capitalized letter?, and what do we call such a function?
+        //meget fjollet. Efter at have undersøgt lidt rundt på nettet fandt jeg ud af at den eneste gang man bruge en funktion der starter med et stort bogstav,
+        //er når man kommer til at bruge objectet i sammenhæng med 'new' nøgleordet. Vi kalder det for: constructor functions.
+
+        //2) Create a Person instance an rerun the example as sketched below:
+        var p = new Person("Kurt Wonnegut");  //Create an instance using the constructor function
+        console.log("I'm global: " + name);  //What’s different ?
+
+    </script>
 </body>
 </html>
