@@ -200,9 +200,52 @@
         //er når man kommer til at bruge objectet i sammenhæng med 'new' nøgleordet. Vi kalder det for: constructor functions.
 
         //2) Create a Person instance an rerun the example as sketched below:
-        var p = new Person("Kurt Wonnegut");  //Create an instance using the constructor function
-        console.log("I'm global: " + name);  //What’s different ?
+        var p = new Person("Per Hans");  //Create an instance using the constructor function
+        console.log("I'm global: " + name);  //What’s different ? // svar = name er stadig Kurt Wonnegut fordi at per hans er et nyt object sat til en variabel,
+                                                    //dvs den erstatter ikke variablen: name.
+        //We still need to fix the problem with the callback, not having access to the “outer” this.
+
+        //3) Change your code to fix the problem, using both strategies given below.
+        //Store a reference to the outer this
+        function PersonSelf(name) {
+            this.name = name;
+            var self = this;
+            console.log("Name: " + this.name);
+            setTimeout(function () {
+                console.log("Hi  " + self.name);
+            }, 2000);
+        }
+
+        //Using the bind(..) function
+        function PersonBind(name) {
+            this.name = name;
+            console.log("Name: " + this.name);
+            setTimeout(function () {
+                console.log("Hi  " + this.name);
+            }.bind(this), 2000);
+        }
+        //4) The bind method will be extremely important to understand for our future journey into javascript.
+        //Write, run and UNDERSTAND the example below
+        var greeter = function () {
+            console.log(this.message);
+        };
+        var comp1 = { message: "Hello World" };
+        var comp2 = { message: "Hi" };
+
+        var g1 = greeter.bind(comp1); //we can store a reference, with a specific "this" to use
+        var g2 = greeter.bind(comp2); //and here another "this"
+        setTimeout(g1, 500);
+        setTimeout(g2, 1000);
+        //det jeg forstår ud fra dette er at bind metoden laver en ny funktion, der når den bliver kaldet har dens værdi sat til 
+        //(i dette tilfælde) this.message, begrund af timeouts kald, vil g1 blive vist frem efter 0.5 sekunder, g2 efter 1 sekund.
+        //kort sagt: f.eks greeter bliver bundet sammen med g1, så "Hello World" nu automatisk kan bruges i sammenhæng med this.name i console.log indeni greeter metoden.
+
+        //JavaScript Objects
+        //1) Create an object with four different properties, with values, of your own choice (ex: name, birthday, hobby, email).
+
+
+
+
 
     </script>
 </body>
-</html>
